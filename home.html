@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <style>
+        body
+       {
+           margin: 0;
+           padding: 0;
+           font-family: sans-serif;
+           background-size: cover;
+           overflow-y: scroll;
+           overflow-x: hidden;
+       }
+       .header
+       {
+           min-height: 100vh;
+           background-color: #000000;
+           width: 100%;
+           position: relative;
+           overflow-y: scroll;
+       }
+       nav
+       {   
+           margin-left: 10px;
+           width: 100%;
+           padding-top: 1px;
+           align-items: center;
+           text-decoration: none;
+           
+       }
+       .navlinks a 
+       {
+            float: left;
+            margin-top: -50px;
+            display: block;
+            color:white;
+            text-align: center;
+            padding-right: 15px;
+            padding: 15px 15px;
+            text-decoration: none;
+            border: 1px solid white;
+           border-radius: 10%;
+            font-size: 17px;
+       }
+       
+       li
+       {
+           float: right;
+           padding-right: 11px;
+       }
+       ul
+       {
+          list-style:none;
+          margin:15px;
+          padding:22px;
+       }
+       .mainheading h3
+        {
+          color:white;
+          text-align: center;
+          font-size:45px;
+          padding-top: 160px;
+        }
+        .mainheading p
+        {
+          color: white;
+          text-align: center;
+          margin-top: -20px;
+          padding-top: -1px;
+        }
+        .button
+        {
+            text-align: center;
+            background-color:rgb(18, 17, 17);
+            border: 1px solid white;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 20px;
+            width: 15%;
+            margin-left: 40%;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        main 
+        {
+            background-size: cover;
+            height: 550px;
+            position: relative;
+            width: calc(min(90rem, 90%));
+            margin: 0 auto;
+            min-height: 100vh;
+            column-gap: 3rem;
+            padding-block: min(20vh, 3rem);
+        }
+        main > div span 
+        {
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 1rem;
+            color: #717171;
+        }
+
+        main > div h1 
+        {
+            text-transform: capitalize;
+            letter-spacing: 0.8px;
+            font-family: "Roboto", sans-serif;
+            font-weight: 900;
+            font-size: clamp(3.4375rem, 3.25rem + 0.75vw, 4rem);
+            background-color: #005baa;
+            background-image: linear-gradient(45deg, #005baa, #000000);
+            background-size: 100%;
+            background-repeat: repeat;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -moz-background-clip: text;
+            -moz-text-fill-color: transparent;
+        }
+        main > div hr 
+        {
+            display: block;
+            background: #005baa;
+            height: 0.25rem;
+            width: 6.25rem;
+            border: none;
+            margin: 1.125rem 0 1.875rem 0;
+        }
+
+        main > div p 
+        {
+            line-height: 1.6;
+        }
+
+        main a 
+        {
+            display: inline-block;
+            text-decoration: none;
+            text-transform: uppercase;
+            color: #717171;
+            font-weight: 400;
+            background: #fff;
+            border-radius: 3.125rem;
+            transition: 0.3s ease-in-out;
+        }
+
+        main > div > a 
+        {
+            border: 2px solid #c2c2c2;
+            margin-top: 2.188rem;
+            padding: 0.625rem 1.875rem;
+        }
+        
+        nav a:hover{background:rgb(28, 27, 27);}
+            .button:hover{background:#423c3c;}
+    </style>
+    <section class="header" id="home">
+    <header>
+        <div class="navlinks">
+        <nav>
+            <ul>
+                <div style="margin-top: -100px;margin-bottom: -90px;" class="logo"><img src='5.png' alt="logo" width="230" height="250"></div>
+                
+                <li><a href="#about">About</a></li>
+                <li><a href="#home">Home</a></li>
+            </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+        <div class="mainheading">
+            <h3>Where Preparedness Meets Technology </h3>
+            <p style="text-align: center;"><b>Get Alerts on Areas Impacted by Water Levels exceeding Sea Level.</b></p>
+            <div class="button"><a href="./flood.html" style="color:white;font-size: x-large; text-align:center;text-decoration: none;"></style> Try Now</a></div> 
+        </div>
+        
+        
+    </section>
+</section>
+<section class="second" id="about">
+    <main>
+        <div>
+            <span style="margin-top: 250px;">discover</span>
+            <h1>about us</h1>
+            <hr>
+            <p style="font-size: large;">At <strong>Resilience</strong>, we are driven by a singular mission: to empower individuals and communities with the tools they need to proactively manage and respond to disasters, specifically focusing on flood detection. Our user-friendly web app provides real-time alerts, resources, and support to keep you and your loved ones safe during challenging times. We believe that by harnessing the power of technology, we can enhance disaster resilience and make a meaningful difference in people's lives.</p>
+            
+        </div>
+    </main>
+</body>
+</html>

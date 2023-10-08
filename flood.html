@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Visualization with Elevation</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        #map-container {
+            flex: 1;
+            height: 100vh;
+            position: relative;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        #sidebar {
+            width: 300px;
+            padding: 20px;
+            background-color: #f1f1f1;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #sidebar label,
+        #sidebar input {
+            margin-bottom: 10px;
+        }
+
+        #sidebar input[type="date"] {
+            width: calc(100% - 20px);
+            padding: 5px 10px;
+        }
+
+        #submit-btn {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+    <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+
+<body>
+    <div id="map-container">
+        <div id="map"></div>
+    </div>
+    <div id="sidebar">
+        <label for="height-input">Enter Height (m):</label>
+        <input type="text" id="height-input" name="height" required>
+        <label for="date-input">Select Date (within next 7 days):</label>
+        <input type="date" id="date-input" name="date" required>
+        <div id="error-message"></div>
+        <button id="submit-btn" disabled>Submit</button>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        let SeaLevel=50;
+         function fetchSeaLevelData() {
+       fetch('http://127.0.0.1:5000/model?rb=2&sn=0&rf=3.8&l=3.69&rf1=1.4&rf2=1.0&rg1=17.29', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => response.text()) 
+.then(data => {
+    SeaLevel = parseFloat(data); 
+    console.log(SeaLevel, "blaaaaa");
+    map.fireEvent('click', { latlng: map.getCenter() });
+})
+.catch(error => console.error('Error:', error));
+
+         }
+   //window.addEventListener('load', fetchSeaLevelData);
+        const map = L.map('map', {
+            maxZoom: 18 
+        }).setView([11.2588, 75.7804], 14); 
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        map.on('click', function (e) {
+            const clickedLat = e.latlng.lat;
+            const clickedLng = e.latlng.lng;
+
+            const radiusInMeters = 500;
+            const latDelta = (radiusInMeters / 111300) * (1 / Math.cos(clickedLat * (Math.PI / 180)));
+            const lngDelta = (radiusInMeters / 111300);
+
+            const minLat = clickedLat - latDelta;
+            const maxLat = clickedLat + latDelta;
+            const minLng = clickedLng - lngDelta;
+            const maxLng = clickedLng + lngDelta;
+
+            const coordinates = [];
+            coordinates.push({ clickedLat, clickedLng });
+            for (let i = 0; i < 1000; i++) {
+                const lat = Math.random() * (maxLat - minLat) + minLat;
+                const lng = Math.random() * (maxLng - minLng) + minLng;
+                coordinates.push({ lat, lng });
+            }
+
+            coordinates.forEach(coord => {
+                fetch(`https://api.open-elevation.com/api/v1/lookup?locations=${coord.lat},${coord.lng}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const elevation = data.results[0].elevation;
+                        console.log(elevation,SeaLevel)
+                        let markerColor = elevation < SeaLevel ? 'red' : "green";
+                        L.marker([coord.lat, coord.lng], {
+                            icon: L.divIcon({
+                                className: 'custom-marker',
+                                html: `<div style="background-color: ${markerColor};opacity:0.2;border-radius:100%; width: 100px; height: 100px;" class="marker"></div>`
+                            })
+                        })
+                            .addTo(map)
+                            .bindPopup(`Latitude: ${coord.lat}<br>Longitude: ${coord.lng}<br>Elevation: ${elevation.toFixed(2)} meters`);
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        // Handle input changes and validate date
+        const dateInput = document.getElementById('date-input');
+        const heightInput = document.getElementById('height-input');
+        const errorMessage = document.getElementById('error-message');
+        const submitBtn = document.getElementById('submit-btn');
+
+        dateInput.addEventListener('input', function () {
+            const selectedDate = new Date(dateInput.value);
+            const today = new Date();
+            const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000); // Next week date
+
+            if (selectedDate >= today && selectedDate <= nextWeek) {
+                errorMessage.textContent = '';
+                submitBtn.removeAttribute('disabled');
+            } else {
+                errorMessage.textContent = 'Please select a date within the next 7 days.';
+                submitBtn.setAttribute('disabled', 'true');
+            }
+        });
+
+        heightInput.addEventListener('input', function () {
+            if (/^\d+$/.test(heightInput.value)) {
+                errorMessage.textContent = '';
+                submitBtn.removeAttribute('disabled');
+            } else {
+                errorMessage.textContent = 'Please enter a valid height.';
+                submitBtn.setAttribute('disabled', 'true');
+            }
+        });
+
+        submitBtn.addEventListener('click', function () {
+            SeaLevel = parseInt(heightInput.value);
+            
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+            map.fireEvent('click', { latlng: map.getCenter() });
+        });
+    </script>
+</body>
+
+</html>
